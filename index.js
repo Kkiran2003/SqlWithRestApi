@@ -9,10 +9,10 @@ const app = express();
 const port = 8080;
 
 app.set("view engine", "ejs");
-app.use( methodOverride("_method") )
-app.use(express.urlencoded({extended : true}))
+app.use(methodOverride("_method"))
+app.use(express.urlencoded({ extended: true }))
 app.set("views", path.join(__dirname, "/views"));
-app.use(express.static(path.join(__dirname,"/public")))
+app.use(express.static(path.join(__dirname, "/public")))
 
 // Create the connection to database
 const connection = mysql.createConnection({
@@ -46,101 +46,102 @@ app.get("/user", (req, res) => {
   try {
     connection.query(q, (err, users) => {
       if (err) throw err;
-      res.render("showuser.ejs" ,{users})
+      res.render("showuser.ejs", { users })
     })
   } catch (err) {
     res.send("some error occur")
   }
 })
 
-app.get("/user/:id/edit",(req,res)=>{
-  let {id} = req.params;
+app.get("/user/:id/edit", (req, res) => {
+  let { id } = req.params;
   let q = `select * from user where id ="${id}"`
   try {
     connection.query(q, (err, users) => {
       if (err) throw err;
       let user = users[0];
-      res.render("edit.ejs" ,{user})
+      res.render("edit.ejs", { user })
     })
   } catch (err) {
     res.send("some error occur")
   }
-  
+
 })
 
-app.get("/user/add",(req,res)=>{
-res.render("add.ejs")
-  
+app.get("/user/add", (req, res) => {
+  res.render("add.ejs")
+
 })
 
-app.patch("/user/:id",(req,res)=>{
-  let {id} = req.params;
-  let{username : newUsername ,password : formPassword} = req.body;
-let q = `select * from user where id ='${id}'`;
- try {
+app.patch("/user/:id", (req, res) => {
+  let { id } = req.params;
+  let { username: newUsername, password: formPassword, pass} = req.body;
+  
+  let q = `select * from user where id ='${id}'`;
+  try {
     connection.query(q, (err, users) => {
       if (err) throw err;
       let user = users[0];
-      if( formPassword != user.password){
-      res.send("wrong password")
-        
-      }else{
-         let q2 = `update user set username ="${newUsername}" where id = "${id}"`
-         connection.query(q2,(err,user)=>{
-          res.redirect("/user")
-         })
- }
+      if (formPassword != user.password) {
+        res.send("wrong password");
+       
+ }else {
+    let q2 = `update user set username ="${newUsername}",password ="${pass}" where id = "${id}"`
+         connection.query(q2, (err, user) => {
+      res.redirect("/user")
+    })
+  }
     })
   } catch (err) {
-    res.send("some error occur")
-  }
+  res.send("some error occur")
+}
   
 })
 
-app.post("/user/add",(req,res)=>{
-  let {id,username,email,password} = req.body;
+app.post("/user/add", (req, res) => {
+  let { id, username, email, password } = req.body;
   let q = `insert into user(id,username,email,password)values(?,?,?,?)`;
-  let user = [id,username,email,password];
+  let user = [id, username, email, password];
   try {
-    connection.query(q,user, (err, users) => {
+    connection.query(q, user, (err, users) => {
       if (err) throw err;
       res.redirect("/user")
     })
   } catch (err) {
     res.send("some error occur")
   }
-  
+
 
 
 })
 
-app.get("/user/:id",(req,res)=>{
-  let {id} = req.params;
-  
+app.get("/user/:id", (req, res) => {
+  let { id } = req.params;
+
   let q = `select * from user where id ="${id}"`
   try {
     connection.query(q, (err, users) => {
       if (err) throw err;
-      let user = users[0] 
-      res.render("showdetailuser.ejs",{user})
+      let user = users[0]
+      res.render("showdetailuser.ejs", { user })
     })
   } catch (err) {
     res.send("some error occur")
   }
-  
+
 })
 
-app.delete("/user/:id",(req,res)=>{
-  let {id} = req.params;
-   let q = `delete from user where id ="${id}"`;
-   try{
-    connection.query(q,(err,result)=>{
-      if(err) throw err;
+app.delete("/user/:id", (req, res) => {
+  let { id } = req.params;
+  let q = `delete from user where id ="${id}"`;
+  try {
+    connection.query(q, (err, result) => {
+      if (err) throw err;
       res.redirect("/user")
-     })
-   }catch(err){
+    })
+  } catch (err) {
     res.send("some error")
-   }
+  }
 })
 
 

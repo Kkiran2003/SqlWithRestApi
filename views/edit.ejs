@@ -8,8 +8,10 @@
 <body>
     <h2>edit user about to <%= user.email %></h2>
     <form method="post" action="/user/<%=user.id %>?_method=PATCH">
-    <textarea name="username" id="username"><%= user.username %></textarea>
-    <input type="password" name="password" id="password">
+    <textarea name="username" id="username"><%= user.username %></textarea><br><br>
+    <input type="password" name="password" id="password"><br><br>
+    <label for="pass">Enter new password:</label><br>
+    <input type="text" name="pass" id="pass"><br><br>
     <button>Update</button>
     </form>
 </body>
