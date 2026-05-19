@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Show All usera</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>id</th>
+        <th>Username</th>
+        <th>Email</th>
+      </tr>
+     
+      <% for(let user of users) { %>
+    <tr>
+        <td><%= user.id %></td>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+       <td>
+          <form method="get" action="/user/<%= user.id %>">
+            <button>show particular user</button>
+          </form>
+          <form method="post" action="/user/<%= user.id %>?_method=delete">
+            <button>delete user</button>
+          </form>
+        </td>
+      </tr>
+<% } %>
+     
+    </table>
+  </body>
+</html>
+
+
